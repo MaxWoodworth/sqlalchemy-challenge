@@ -31,8 +31,8 @@ def aloha():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start><br/>"
-        f"/api/v1.0/<start>/<end><br/>"
+        f"/api/v1.0/start<br/>"
+        f"/api/v1.0/start/end<br/>"
     )
 
 #Percipitation route #copy pasta current_data
@@ -70,7 +70,23 @@ def temps():
      finals = list(np.ravel(final))
      return jsonify(finals)
 
+#Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+#When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+@app.route("/api/v1.0/<start>")
+def start():
+    yes = session.query(func.max(measurement.tobs), func.min(measurement.tobs), func.avg(measurement.tobs)).\
+    filter(measurement.date>=start).all()
+    output = list(np.ravel(yes))
+    return jsonify(output)
 
+#copy pasta the one from above but adds less than end filter for when end date is entered
+@app.route("/api/v1.0/<start>/<end>")
+def end():
+    no = session.query(func.max(measurement.tobs), func.min(measurement.tobs), func.avg(measurement.tobs)).\
+    filter(measurement.date>=start).\
+    filter(measurement.date<end).all()
+    okay = list(np.ravel(no))
+    return jsonify(okay)
 
 if __name__ == "__main__":
     app.run(debug=True)

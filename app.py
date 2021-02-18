@@ -9,7 +9,7 @@ from sqlalchemy import create_engine, func
 from flask import Flask, jsonify
 
 ## Create Engine (copy pasta from jupyter notebook)
-engine = create_engine("sqlite://resources/hawaii.sqlite")
+engine = create_engine("sqlite:///resources/hawaii.sqlite")
     # reflect an existing database into a new model
 base=automap_base()
     # reflect the tables
@@ -26,5 +26,33 @@ app = Flask(__name__)
 @app.route("/")
 def aloha():
     return(
-        f"Aloha!"
+        f"Aloha! Check out this Historical Weather Data for Hawaii.<br/>"
+        f"All Available Routes<br/>"
+        f"/api/v1.0/precipitation<br/>"
+        f"/api/v1.0/stations<br/>"
+        f"/api/v1.0/tobs<br/>"
+        f"/api/v1.0/<start><br/>"
+        f"/api/v1.0/<start>/<end><br/>"
     )
+
+#Percipitation route #copy pasta current_data
+@app.route("/api/v1.0/precipitation")
+def current_data():
+    current_data = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+    #bring in rain query and return jsonify
+    rain = session.query(measurement.date, measurement.prcp).\
+    filter(measurement.date > current_data).\
+    order_by(measurement.date).all()
+    return jsonify(dict(rain))
+    
+#Stations
+#Return a JSON list of stations from the dataset.
+#@app.route("/api/v1.0/station")
+#def stations():
+
+
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

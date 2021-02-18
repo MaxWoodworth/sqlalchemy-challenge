@@ -51,14 +51,24 @@ def current_data():
 def stations():
     #kept getting 500 error when I tried to run from stations.station but this should work the same
     stat = session.query(measurement.station).all()
-    #after testing there was a ton of space between sations so I used ravel to get a flattened array.
+    #after testing there was a ton of space between sations so I used ravel to get a flattened array ny unraveling and making it a list.
     # link to documentation https://numpy.org/doc/stable/reference/generated/numpy.ravel.html
     stations = list(np.ravel(stat))
     return jsonify(stations)
 
 #Temperatures
+#Query the dates and temperature observations of the most active station for the last year of data.
+#Return a JSON list of temperature observations (TOBS) for the previous year.
 @app.route("/api/v1.0/tobs")
 def temps():
+     #again copy pasta format for getting the last years data
+     current_data = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+     #copy pasta final query from jupyternb
+     final = session.query(measurement.tobs).\
+     filter(measurement.station == 'USC00519281').\
+     filter(measurement.date > current_data).all()
+     finals = list(np.ravel(final))
+     return jsonify(finals)
 
 
 

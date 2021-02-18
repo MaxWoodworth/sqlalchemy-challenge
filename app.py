@@ -51,8 +51,14 @@ def current_data():
 def stations():
     #kept getting 500 error when I tried to run from stations.station but this should work the same
     stat = session.query(measurement.station).all()
-    return jsonify(stat)
+    #after testing there was a ton of space between sations so I used ravel to get a flattened array.
+    # link to documentation https://numpy.org/doc/stable/reference/generated/numpy.ravel.html
+    stations = list(np.ravel(stat))
+    return jsonify(stations)
 
+#Temperatures
+@app.route("/api/v1.0/tobs")
+def temps():
 
 
 

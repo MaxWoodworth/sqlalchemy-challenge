@@ -47,9 +47,11 @@ def current_data():
     
 #Stations
 #Return a JSON list of stations from the dataset.
-#@app.route("/api/v1.0/station")
-#def stations():
-
+@app.route("/api/v1.0/station")
+def stations():
+    #kept getting 500 error when I tried to run from stations.station but this should work the same
+    stat = session.query(measurement.station).all()
+    return jsonify(stat)
 
 
 
